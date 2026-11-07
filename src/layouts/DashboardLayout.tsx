@@ -1,0 +1,21 @@
+import { Navigate, Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+
+export default function DashboardLayout() {
+  if (localStorage.getItem("isLogin") !== "true") {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-60">
+        <Topbar />
+        <main className="p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}

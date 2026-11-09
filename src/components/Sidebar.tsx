@@ -1,4 +1,3 @@
-import logo from "../assets/logo-rihla-insani.svg";
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -9,25 +8,38 @@ import {
   ClipboardCheck,
   FileText,
   Settings,
+  UserCog,
   LogOut,
 } from "lucide-react";
+import logo from "../assets/logo-rihla-insani.svg";
 
-const menu = [
-  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { label: "Data Siswa", path: "/data-siswa", icon: Users },
-  { label: "Data Kelas", path: "/data-kelas", icon: School },
-  { label: "Input Absensi", path: "/input-absensi", icon: ClipboardList },
-  { label: "Data Absensi", path: "/data-absensi", icon: ClipboardCheck },
-  { label: "Laporan Absensi", path: "/laporan-absensi", icon: FileText },
-  { label: "Pengaturan", path: "/pengaturan", icon: Settings },
+type Peran = "admin" | "user";
+
+const menu: {
+  label: string;
+  path: string;
+  icon: typeof Users;
+  peran: Peran[];
+}[] = [
+  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, peran: ["admin", "user"] },
+  { label: "Data Siswa", path: "/data-siswa", icon: Users, peran: ["admin"] },
+  { label: "Data Kelas", path: "/data-kelas", icon: School, peran: ["admin"] },
+  { label: "Input Absensi", path: "/input-absensi", icon: ClipboardList, peran: ["admin", "user"] },
+  { label: "Data Absensi", path: "/data-absensi", icon: ClipboardCheck, peran: ["admin", "user"] },
+  { label: "Laporan Absensi", path: "/laporan-absensi", icon: FileText, peran: ["admin", "user"] },
+  { label: "Users", path: "/users", icon: UserCog, peran: ["admin"] },
+  { label: "Pengaturan", path: "/pengaturan", icon: Settings, peran: ["admin", "user"] },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const [konfirmasi, setKonfirmasi] = useState(false);
 
+  const role = (localStorage.getItem("role") as Peran) ?? "user";
+  const menuTampil = menu.filter((m) => m.peran.includes(role));
+
   const logout = () => {
-    localStorage.removeItem("isLogin");
+    ["isLogin", "role", "nama", "username"].forEach((k) => localStorage.removeItem(k));
     setKonfirmasi(false);
     navigate("/", { replace: true });
   };
@@ -35,14 +47,14 @@ export default function Sidebar() {
   return (
     <>
       <aside className="fixed inset-y-0 left-0 flex w-60 flex-col bg-green-900 text-white">
-        <div className="border-b border-green-800 p-5 text-center">
-          <img src={logo} alt="Logo SD IT Rihla Insani" className="w-16 h-16 mx-auto mb-2" />
+                <div className="border-b border-green-800 p-5 text-center">
+          <img src={logo} alt="Logo SD IT Rihla Insani" className="mx-auto mb-3 h-20 w-20" />
           <h1 className="text-lg font-bold">SD IT Rihla Insani</h1>
           <p className="text-xs text-green-200">Sistem Informasi Absensi Siswa</p>
         </div>
 
-        <nav className="flex-1 space-y-1 p-3">
-          {menu.map((item) => (
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+          {menuTampil.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}
@@ -61,10 +73,10 @@ export default function Sidebar() {
 
           <button
             onClick={() => setKonfirmasi(true)}
-            className={`flex w-full items-center gap-3 rounded-lg border border-red-500 px-3 py-2.5 text-sm transition ${
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
               konfirmasi
-                ? "bg-red-500 font-semibold text-white"
-                : "text-red-300 hover:bg-red-500 hover:text-white"
+                ? "bg-green-600 font-semibold"
+                : "text-green-100 hover:bg-green-800"
             }`}
           >
             <LogOut className="h-4 w-4" />

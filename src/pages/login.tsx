@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, LockKeyhole, Eye, EyeOff, Lock } from "lucide-react";
 import "../App.css";
+import { ambilUsers } from "../data/users";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -12,7 +13,24 @@ export default function Login() {
 
   const handleLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const user = ambilUsers().find(
+      (u) => u.username === username && u.password === password
+    );
+
+    if (!user) {
+      alert("Username atau password salah!");
+      return;
+    }
+    if (!user.aktif) {
+      alert("Akun Anda nonaktif. Hubungi admin.");
+      return;
+    }
+
     localStorage.setItem("isLogin", "true");
+    localStorage.setItem("role", user.role);
+    localStorage.setItem("nama", user.nama);
+    localStorage.setItem("username", user.username);
     navigate("/dashboard");
   };
 
@@ -21,12 +39,18 @@ export default function Login() {
       {/* BAGIAN KIRI */}
       <section className="hero-panel relative w-1/2 min-h-screen bg-gradient-to-br from-green-800 to-green-950 text-white flex flex-col items-center justify-between px-8 py-10">
         <div className="text-center z-10 mt-2">
-          <img src={logo} alt="Logo SD IT Rihla Insani" className="w-32 h-32 mx-auto mb-3" />
+          <img
+            src={logo}
+            alt="Logo SD IT Rihla Insani"
+            className="w-32 h-32 mx-auto mb-3"
+          />
 
           <p className="text-lg font-medium">Sistem Informasi</p>
           <h1 className="text-3xl font-bold leading-tight">Absensi Siswa</h1>
           <div className="w-20 h-0.5 bg-yellow-400 mx-auto my-4" />
-          <h2 className="text-xl font-bold text-yellow-400">SD IT Rihla Insani</h2>
+          <h2 className="text-xl font-bold text-yellow-400">
+            SD IT Rihla Insani
+          </h2>
           <p className="text-sm text-green-100 mt-2 leading-relaxed">
             Kelola absensi siswa dengan mudah,
             <br />
@@ -128,7 +152,9 @@ export default function Login() {
           <div className="text-center mt-5 text-xs text-gray-500 leading-relaxed">
             <p>© 2024 Sistem Informasi Absensi Siswa</p>
             <p>
-              <span className="text-green-700 font-medium">Mi Hudal Islam.</span>{" "}
+              <span className="text-green-700 font-medium">
+                SD IT Rihla Insani.
+              </span>{" "}
               All rights reserved.
             </p>
           </div>

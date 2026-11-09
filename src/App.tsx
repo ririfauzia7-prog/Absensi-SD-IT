@@ -8,6 +8,7 @@ import InputAbsensi from "./pages/InputAbsensi";
 import DataAbsensi from "./pages/DataAbsensi";
 import EditAbsensi from "./pages/EditAbsensi";
 import LaporanAbsensi from "./pages/LaporanAbsensi";
+import ManajemenUser from "./pages/ManajemenUser";
 import Pengaturan from "./pages/Pengaturan";
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/data-absensi" element={<DataAbsensi />} />
         <Route path="/data-absensi/edit" element={<EditAbsensi />} />
         <Route path="/laporan-absensi" element={<LaporanAbsensi />} />
+        <Route path="/users" element={<ManajemenUser />} />
         <Route path="/pengaturan" element={<Pengaturan />} />
       </Route>
     </Routes>
